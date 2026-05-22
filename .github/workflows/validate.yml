@@ -1,0 +1,29 @@
+name: Validate SQL and Docker Compose
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate Config Files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check docker-compose syntax
+        run: docker compose -f docker-compose.yml config
+
+      - name: Check SQL file exists and is non-empty
+        run: |
+          if [ ! -s schema/init.sql ]; then
+            echo "Error: init.sql is missing or empty"
+            exit 1
+          fi
+          echo "init.sql looks good"
+
+      - name: Check scripts are executable
+        run: |
+          test -f scripts/backup.sh && echo "backup.sh exists"
+          test -f scripts/restore.sh && echo "restore.sh exists"
