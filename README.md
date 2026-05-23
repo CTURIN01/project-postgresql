@@ -176,3 +176,26 @@ text
 
 **Chris Turin**  
 [GitHub](https://github.com/CTURIN01) • [LinkedIn](https://linkedin.com/in/christurin)
+
+---
+
+## Troubleshooting
+
+### Git Bash path conversion on Windows
+If `docker exec ... -f /schema.sql` turns into a `C:/Program Files/Git/...` error, disable Git Bash path conversion for that command:
+
+```bash
+MSYS_NO_PATHCONV=1 docker cp schema.sql postgres_db:/schema.sql
+MSYS_NO_PATHCONV=1 docker cp seed.sql postgres_db:/seed.sql
+MSYS_NO_PATHCONV=1 docker cp queries/analysis.sql postgres_db:/analysis.sql
+
+MSYS_NO_PATHCONV=1 docker exec -it postgres_db psql -U appuser -d appdb -f /schema.sql
+MSYS_NO_PATHCONV=1 docker exec -it postgres_db psql -U appuser -d appdb -f /seed.sql
+MSYS_NO_PATHCONV=1 docker exec -it postgres_db psql -U appuser -d appdb -f /analysis.sql
+```
+
+### Common PostgreSQL connection issues
+- If `role "admin" does not exist`, check `POSTGRES_USER` in `docker-compose.yml`.
+- If `database "appuser" does not exist`, specify the database explicitly with `-d appdb`.
+- If tables already exist, PostgreSQL may have partially loaded the schema in a previous run.
+
