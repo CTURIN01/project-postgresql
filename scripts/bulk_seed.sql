@@ -1,24 +1,24 @@
 -- bulk_seed.sql
 -- Generates realistic volume test data for the fintech database.
 -- Run AFTER schema.sql and seed.sql have already been applied.
--- Inserts 500 mock transactions, 50 fraud flags, and updates account balances.
 
 -- ============================================================
 -- 500 mock transactions across existing accounts
 -- ============================================================
-INSERT INTO transactions (account_id, amount, type, status, created_at)
+INSERT INTO transactions (account_id, amount, transaction_type, merchant, status, created_at)
 SELECT
     (ARRAY[1,2,3,4,5])[floor(random() * 5 + 1)::int],
     round((random() * 9900 + 100)::numeric, 2),
-    (ARRAY['debit','credit','transfer'])[floor(random() * 3 + 1)::int],
-    (ARRAY['completed','pending','failed'])[floor(random() * 3 + 1)::int],
+    (ARRAY['deposit','withdrawal','transfer'])[floor(random() * 3 + 1)::int],
+    (ARRAY['Amazon','Stripe','PayPal','Shopify','Square','Venmo','Wise','Plaid'])[floor(random() * 8 + 1)::int],
+    (ARRAY['completed','pending','failed','flagged'])[floor(random() * 4 + 1)::int],
     NOW() - (random() * interval '90 days')
 FROM generate_series(1, 500);
 
 -- ============================================================
 -- 50 mock fraud flags against random transactions
 -- ============================================================
-INSERT INTO fraud_flags (transaction_id, reason, reviewed, created_at)
+INSERT INTO fraud_flags (transaction_id, flag_reason, reviewed, flagged_at)
 SELECT
     t.id,
     (ARRAY[
@@ -37,10 +37,10 @@ LIMIT 50;
 -- ============================================================
 -- Verification counts
 -- ============================================================
-SELECT 'transactions' AS table_name, COUNT(*) AS row_count FROM transactions
+SELECT 'users'         AS table_name, COUNT(*) AS row_count FROM users
 UNION ALL
-SELECT 'fraud_flags', COUNT(*) FROM fraud_flags
+SELECT 'accounts',       COUNT(*) FROM accounts
 UNION ALL
-SELECT 'users', COUNT(*) FROM users
+SELECT 'transactions',   COUNT(*) FROM transactions
 UNION ALL
-SELECT 'accounts', COUNT(*) FROM accounts;
+SELECT 'fraud_flags',    COUNT(*) FROM fraud_flags;
