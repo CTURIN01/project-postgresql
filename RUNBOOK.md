@@ -186,3 +186,20 @@ Add a new server connection:
 | Run queries | `MSYS_NO_PATHCONV=1 docker exec -it postgres_db psql -U appuser -d appdb -f /analysis.sql` |
 | Backup | `docker exec -it postgres_db bash -c "pg_dump -U appuser appdb > /tmp/backup.sql"` |
 
+
+---
+
+## 9. Load Bulk Test Data (500+ Transactions)
+
+After running the base seed, optionally load the bulk seed script to generate realistic data volume for testing analytical queries:
+
+```bash
+MSYS_NO_PATHCONV=1 docker cp scripts/bulk_seed.sql postgres_db:/bulk_seed.sql
+MSYS_NO_PATHCONV=1 docker exec -it postgres_db psql -U appuser -d appdb -f /bulk_seed.sql
+```
+
+This inserts:
+- 500 mock transactions across all accounts (debit, credit, transfer; completed, pending, failed)
+- 50 fraud flags with realistic reasons against random transactions
+- A verification query that prints final row counts for all four tables
+
