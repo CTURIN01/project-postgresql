@@ -199,3 +199,4 @@ MSYS_NO_PATHCONV=1 docker exec -it postgres_db psql -U appuser -d appdb -f /anal
 - If `database "appuser" does not exist`, specify the database explicitly with `-d appdb`.
 - If tables already exist, PostgreSQL may have partially loaded the schema in a previous run.
 
+# cleanup
