@@ -66,3 +66,8 @@ FROM table_name;
 - Add query performance notes
 - Add indexing examples
 - Add EXPLAIN / EXPLAIN ANALYZE examples
+
+## Common Auth Errors
+- KYC PENDING: customer not yet verified, block transaction access
+- KYC FAILED: escalate to compliance team
+- Token expired: re-run Link flow, exchange new public_token
