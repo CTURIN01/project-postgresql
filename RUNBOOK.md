@@ -203,3 +203,8 @@ This inserts:
 - 50 fraud flags with realistic reasons against random transactions
 - A verification query that prints final row counts for all four tables
 
+
+## Fraud Review SLA
+- All OPEN fraud flags must be reviewed within 24 hours
+- Query fraud_flags WHERE reviewed = FALSE AND flagged_at < NOW() - INTERVAL '24 hours'
+- Escalate any flag open > 48 hours to compliance team
